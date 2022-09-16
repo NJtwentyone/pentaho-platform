@@ -861,7 +861,7 @@ public class PentahoMetadataDomainRepository implements IMetadataDomainRepositor
    */
   @Override
   public void flushDomains() {
-    logger.debug( "flushDomains()" );
+    logger.debug( "flushDomains()" );logger.error("FLUSH!!!!!");System.out.println("FLUSH!!!!!");
     internalReloadDomains();
   }
 

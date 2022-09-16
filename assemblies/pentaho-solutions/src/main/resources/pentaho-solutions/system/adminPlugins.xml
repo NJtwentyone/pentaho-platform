@@ -15,6 +15,9 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 				<bean class="org.pentaho.platform.engine.core.system.SettingsPublisher"/>
 				<bean class="org.pentaho.platform.engine.core.system.GlobalListsPublisher"/>
 				<bean class="org.pentaho.platform.engine.services.metadata.MetadataPublisher"/>
+				<!--- DEBUG testing new publisher -->
+				<!-- update server/pentaho-server/pentaho-solutions/system/adminPlugins.xml -->
+				<bean class="org.pentaho.platform.engine.services.metadata.MetadataImportPublisher"/>
 			</list>
 		</constructor-arg>
 	</bean>

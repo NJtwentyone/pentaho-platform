@@ -1201,6 +1201,8 @@ public class PentahoSystem {
         }
       }
     }
+    String errorMessage = "!!!!!!!!" + Messages.getInstance().getErrorString( "PentahoSystem.ERROR_0017_PUBLISHER_NOT_FOUND" );
+    Logger.error(PentahoSystem.class, errorMessage); System.out.println(errorMessage);
     return Messages.getInstance().getErrorString( "PentahoSystem.ERROR_0017_PUBLISHER_NOT_FOUND" ); //$NON-NLS-1$
   }
 

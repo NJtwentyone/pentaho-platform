@@ -31,11 +31,11 @@ import org.pentaho.platform.engine.services.messages.Messages;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MetadataPublisher extends BasePublisher {
+public class MetadataImportPublisher extends BasePublisher {
 
   private static final long serialVersionUID = 1843038346011563927L;
 
-  private static final Log logger = LogFactory.getLog( MetadataPublisher.class );
+  private static final Log logger = LogFactory.getLog( MetadataImportPublisher.class );
 
   public static final int NO_ERROR = 0;
 
@@ -51,40 +51,40 @@ public class MetadataPublisher extends BasePublisher {
 
   @Override
   public Log getLogger() {
-    return MetadataPublisher.logger;
+    return MetadataImportPublisher.logger;
   }
 
-  public String getName() {
+  public String getName() { // FIXME change
     return Messages.getInstance().getString( "MetadataPublisher.USER_PUBLISHER_NAME" ); //$NON-NLS-1$
   }
 
-  public String getDescription() {
+  public String getDescription() {  // FIXME change
     return Messages.getInstance().getString( "MetadataPublisher.USER_PUBLISHER_DESCRIPTION" ); //$NON-NLS-1$
   }
 
   @Override
   public String publish( final IPentahoSession session ) {
-    MetadataPublisher.numberUpdated = 0;
+    MetadataImportPublisher.numberUpdated = 0;
     List<String> messages = new ArrayList<String>();
     // refresh new metadata domains
     try {
       IMetadataDomainRepository repo = PentahoSystem.get( IMetadataDomainRepository.class, session );
-      repo.reloadDomains(); logger.error("PUBLISHER FLUSH!!!!!"); System.out.println("PUBLISHER FLUSH!!!!!");
-      MetadataPublisher.numberUpdated = repo.getDomainIds().size();
-      return Messages.getInstance().getString(
-          "MetadataPublisher.USER_METADATA_RELOADED", Integer.toString( MetadataPublisher.numberUpdated ) ); //$NON-NLS-1$
+      logger.error("PUBLISHER FLUSH!!!!!"); System.out.println("PUBLISHER FLUSH!!!!!");
+      repo.flushDomains();  // NOTE change from #reloadDomains() to #flush
+      return "great stuff happened";
+      /**
+       TODO/FIXME should sessionCacheMetadataDomainRepository.reloadDomains
+        - clear cache
+        - have delegate fetch domains
+        - re-populate cache
+        - !! current impl #relaodDomaind + #flushDomains have same logic, #flushDomains seems correct
+        - - to "reload" would have to keep track of all cached data and sessions then know how to retrieve data for each session
+       */
     } catch ( Exception e ) {
       logger.error( Messages.getInstance().getErrorString( "MetadataPublisher.ERROR_0001_USER_IMPORT_META_FAILED" ), e ); //$NON-NLS-1$
       messages.add( Messages.getInstance().getString( "MetadataPublisher.ERROR_0001_USER_IMPORT_META_FAILED" ) ); //$NON-NLS-1$
     }
 
-    StringBuffer buffer = new StringBuffer();
-    buffer.append( "<small>" ); //$NON-NLS-1$
-    for ( String str : messages ) {
-      buffer.append( "<br/>" + str ); //$NON-NLS-1$
-    }
-    buffer
-        .append( "<br/><b>" + Messages.getInstance().getString( "MetadataPublisher.INFO_0001_CHECK_LOG" ) + "</b></small>" ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    return buffer.toString();
+    return "bad stuff happened";
   }
 }
