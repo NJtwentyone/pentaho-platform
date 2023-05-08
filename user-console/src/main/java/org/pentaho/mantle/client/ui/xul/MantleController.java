@@ -88,9 +88,12 @@ import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.components.XulMenuitem;
 import org.pentaho.ui.xul.components.XulToolbarbutton;
 import org.pentaho.ui.xul.containers.XulMenubar;
+import org.pentaho.ui.xul.gwt.AbstractGwtXulComponent;
+import org.pentaho.ui.xul.gwt.GwtXulCloneUtil;
 import org.pentaho.ui.xul.gwt.GwtXulDomContainer;
 import org.pentaho.ui.xul.gwt.binding.GwtBindingFactory;
 import org.pentaho.ui.xul.gwt.tags.GwtConfirmBox;
+import org.pentaho.ui.xul.gwt.tags.GwtMenubar;
 import org.pentaho.ui.xul.gwt.tags.GwtMessageBox;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.stereotype.Bindable;
@@ -821,9 +824,21 @@ public class MantleController extends AbstractXulEventHandler {
     if ( !burgerButton.getElement().hasAttribute( "aria-expanded" ) ) {
       closeBurgerMenuPopup();
 
-      burgerMenuPopup = new BurgerMenuPopup( burgerButton, createBurgerMenuBar( getMainMenubarWidget() ) );
+      burgerMenuPopup = new BurgerMenuPopup( burgerButton, createBurgerMenuBar( mainMenubar ) );
       burgerMenuPopup.showMenu();
     }
+  }
+
+  private AbstractGwtXulComponent clone( XulMenubar xulMenubar ) {
+    // NOTE get class GwtXulCloneUtil from poc branch repo: pentaho-commons-xul
+    GwtXulCloneUtil gwtXulCloneUtil = new GwtXulCloneUtil();
+    return gwtXulCloneUtil.clone( (AbstractGwtXulComponent) xulMenubar );
+  }
+
+  private BurgerMenuBar createBurgerMenuBar( XulMenubar xulMenubar ) {
+
+    AbstractGwtXulComponent clone = clone( xulMenubar);
+    return createBurgerMenuBar((MenuBar)xulMenubar.getManagedObject());
   }
 
   private BurgerMenuBar createBurgerMenuBar( MenuBar menuBar ) {
@@ -1256,7 +1271,6 @@ public class MantleController extends AbstractXulEventHandler {
     }
 
   }
-
 }
 
 enum PickListType {
