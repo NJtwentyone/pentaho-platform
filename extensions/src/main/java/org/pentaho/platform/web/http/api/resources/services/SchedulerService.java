@@ -32,6 +32,7 @@ import org.pentaho.platform.api.engine.ServiceException;
 import org.pentaho.platform.api.repository2.unified.IUnifiedRepository;
 import org.pentaho.platform.api.repository2.unified.RepositoryFile;
 import org.pentaho.platform.api.repository2.unified.UnifiedRepositoryException;
+import org.pentaho.platform.api.scheduler2.IBackgroundExecutionStreamProvider;
 import org.pentaho.platform.api.scheduler2.IBlockoutManager;
 import org.pentaho.platform.api.scheduler2.IJobFilter;
 import org.pentaho.platform.api.scheduler2.IJobTrigger;
@@ -161,8 +162,8 @@ public class SchedulerService {
       parameterMap.put( ActionUtil.QUARTZ_STREAMPROVIDER_INPUT_FILE,  inputFile );
       job =
         getScheduler().createJob( scheduleRequest.getJobName(), actionId, parameterMap, jobTrigger,
-          new RepositoryFileStreamProvider( inputFile, outputFile,
-            getAutoCreateUniqueFilename( scheduleRequest ), getAppendDateFormat( scheduleRequest ) )
+          // POC - inserting helper method to toggle between production and poc code
+          createStreamProviderHelper( inputFile, outputFile, scheduleRequest )
         );
     } else {
       // need to locate actions from plugins if done this way too (but for now, we're just on main)
@@ -205,6 +206,36 @@ public class SchedulerService {
 
     return job;
   }
+
+  /** POC CODE STARTS HERE ***/
+
+  /**
+   * POC
+   * Helper to create IBackgroundExecutionStreamProvider. Will use to toggle between production and poc code.
+   * @param inputFilePath
+   * @param outputFilePath
+   * @param jobScheduleRequest
+   * @return
+   */
+  public IBackgroundExecutionStreamProvider createStreamProviderHelper( final String inputFilePath, final String outputFilePath,
+                                                                  JobScheduleRequest jobScheduleRequest) {
+
+    return createRepositoryFileStreamProvider( inputFilePath, outputFilePath, jobScheduleRequest );
+  }
+
+  // production code
+  public IBackgroundExecutionStreamProvider createRepositoryFileStreamProvider( final String inputFilePath, final String outputFilePath,
+                                                                                JobScheduleRequest jobScheduleRequest ) {
+    return new RepositoryFileStreamProvider( inputFilePath, outputFilePath,
+      getAutoCreateUniqueFilename( jobScheduleRequest ), getAppendDateFormat( jobScheduleRequest ) );
+  }
+
+  public IBackgroundExecutionStreamProvider createVFSFileStreamProvider( final String inputFilePath, final String outputFilePath,
+                                                                                JobScheduleRequest jobScheduleRequest ) {
+    return null; // TODO implement
+  }
+
+  /** POC CODE ENDS HERE ***/
 
   public Job getContentCleanerJob() throws SchedulerException {
     IPentahoSession session = getSession();
