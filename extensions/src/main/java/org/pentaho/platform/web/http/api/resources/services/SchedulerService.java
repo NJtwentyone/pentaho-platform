@@ -54,6 +54,7 @@ import org.pentaho.platform.web.http.api.resources.ComplexJobTriggerProxy;
 import org.pentaho.platform.web.http.api.resources.JobRequest;
 import org.pentaho.platform.web.http.api.resources.JobScheduleParam;
 import org.pentaho.platform.web.http.api.resources.JobScheduleRequest;
+import org.pentaho.platform.web.http.api.resources.PVFSRepositoryFileStreamProvider;
 import org.pentaho.platform.web.http.api.resources.RepositoryFileStreamProvider;
 import org.pentaho.platform.web.http.api.resources.SchedulerOutputPathResolver;
 import org.pentaho.platform.web.http.api.resources.SchedulerResourceUtil;
@@ -219,8 +220,9 @@ public class SchedulerService {
    */
   public IBackgroundExecutionStreamProvider createStreamProviderHelper( final String inputFilePath, final String outputFilePath,
                                                                   JobScheduleRequest jobScheduleRequest) {
-
-    return createRepositoryFileStreamProvider( inputFilePath, outputFilePath, jobScheduleRequest );
+      return usePVFS()
+        ? createVFSFileStreamProvider( inputFilePath, outputFilePath, jobScheduleRequest )
+        : createRepositoryFileStreamProvider( inputFilePath, outputFilePath, jobScheduleRequest );
   }
 
   // production code
@@ -230,9 +232,19 @@ public class SchedulerService {
       getAutoCreateUniqueFilename( jobScheduleRequest ), getAppendDateFormat( jobScheduleRequest ) );
   }
 
+  // poc code
   public IBackgroundExecutionStreamProvider createVFSFileStreamProvider( final String inputFilePath, final String outputFilePath,
                                                                                 JobScheduleRequest jobScheduleRequest ) {
-    return null; // TODO implement
+    return new PVFSRepositoryFileStreamProvider( inputFilePath, outputFilePath,
+      getAutoCreateUniqueFilename( jobScheduleRequest ), getAppendDateFormat( jobScheduleRequest ) );
+  }
+
+  /**
+   * Determines whether to use PVFS code
+   * @return true if environment variable "POC_PVFS_ENABLE" is present, false otherwise
+   */
+  public boolean usePVFS() {
+    return System.getenv().containsKey( "POC_PVFS_ENABLE"  );
   }
 
   /** POC CODE ENDS HERE ***/
