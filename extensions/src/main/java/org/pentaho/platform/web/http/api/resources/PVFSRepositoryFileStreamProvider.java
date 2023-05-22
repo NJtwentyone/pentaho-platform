@@ -130,7 +130,7 @@ public class PVFSRepositoryFileStreamProvider extends RepositoryFileStreamProvid
      *
      * Then after that PurRepositoryMetaStore is supplied to ConnectionManager via provided PurRepository#connect
      */
-    setXmlMetaStore();
+    addXmlMetastoreToPurMetastore();//setXmlMetaStore();
 
     OutputStream pvfsOutputStream = KettleVFS.getOutputStream( fullPVFSFilePath, false);
 
@@ -166,6 +166,26 @@ public class PVFSRepositoryFileStreamProvider extends RepositoryFileStreamProvid
         throw new IllegalStateException( "could not creat XmlMetaStore object", e);
       }
     });
+  }
+
+
+  public void addXmlMetastoreToPurMetastore() {
+    /**
+     * NOTE:
+     * Basically an import all VFS connections from XMl metastore into PurRepository
+     *
+     * Created new function in kettle-core ConnectionManager#getMetaStore()
+     * see https://github.com/NJtwentyone/pentaho-kettle/tree/poc/BACKLOG-37655/9.5/connectionManager-mods,
+     *
+     * so could use ConnectionManager#copy( IMetaStore sourceMetaStore, IMetaStore destinationMetaStore ).
+     * ConnectionManager#copy needs to ConnectionManager#copy( IMetaStore sourceMetaStore ), so no need to ##gtMetaStore(),
+     */
+    try {
+      IMetaStore origMetaStore = ConnectionManager.getInstance().getMetaStore();
+      ConnectionManager.getInstance().copy( MetaStoreConst.openLocalPentahoMetaStore(), origMetaStore );
+    } catch ( MetaStoreException e ) {
+      throw new IllegalStateException( "could not copy XmlMetaStore object", e);
+    }
   }
 
   public String toString() {
