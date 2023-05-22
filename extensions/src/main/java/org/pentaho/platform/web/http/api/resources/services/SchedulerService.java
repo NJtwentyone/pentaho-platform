@@ -220,7 +220,7 @@ public class SchedulerService {
    */
   public IBackgroundExecutionStreamProvider createStreamProviderHelper( final String inputFilePath, final String outputFilePath,
                                                                   JobScheduleRequest jobScheduleRequest) {
-      return usePVFS()
+      return usePVFS() & inputFilePath.contains( "test" )
         ? createVFSFileStreamProvider( inputFilePath, outputFilePath, jobScheduleRequest )
         : createRepositoryFileStreamProvider( inputFilePath, outputFilePath, jobScheduleRequest );
   }
