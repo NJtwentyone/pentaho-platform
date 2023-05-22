@@ -23,30 +23,21 @@ package org.pentaho.platform.web.http.api.resources;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.di.connections.ConnectionManager;
+import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.di.metastore.MetaStoreConst;
-import org.pentaho.di.trans.Trans;
-import org.pentaho.di.trans.TransMeta;
 import org.pentaho.metastore.api.IMetaStore;
 import org.pentaho.metastore.api.exceptions.MetaStoreException;
-import org.pentaho.platform.api.action.IStreamingAction;
-import org.pentaho.platform.api.repository2.unified.IUnifiedRepository;
 import org.pentaho.platform.api.repository2.unified.RepositoryFile;
-import org.pentaho.platform.engine.core.system.PentahoSystem;
+import org.pentaho.platform.plugin.action.kettle.DIServerConfig;
 import org.pentaho.platform.repository.RepositoryFilenameUtils;
-import org.pentaho.platform.repository2.unified.fileio.RepositoryFileInputStream;
-import org.pentaho.platform.repository2.unified.fileio.RepositoryFileOutputStream;
-import org.pentaho.platform.repository2.unified.jcr.PentahoJcrConstants;
 import org.pentaho.platform.util.web.MimeHelper;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
+
 
 /**
  * POC to inject KettleVFS logic into  Scheduler writing of reports to PVFS locations.
@@ -109,14 +100,13 @@ public class PVFSRepositoryFileStreamProvider extends RepositoryFileStreamProvid
         }
       }
     }
-
+    // kept code snippet above similar to RepositoryFileStreamProvider#getOutputStream to get filename
     String filename = tempOutputFilePath.substring( tempOutputFilePath.lastIndexOf( RepositoryFile.SEPARATOR ) + 1 );
     String fullPVFSFilePath = concat( getPVFSOutputDirectory() , filename);
 
     /**
      * Milestone: able to write a file on AWS S3
      *
-     * TODO look into importing the providers from XmlMetaStore into PurRepositoryMetaStore via ConnectionManager.save
      * TODO look into how the default providers are created for PurRepositoryMetaStore
      * */
 
@@ -128,9 +118,11 @@ public class PVFSRepositoryFileStreamProvider extends RepositoryFileStreamProvid
      * On server start up, the KTR server//pentaho-server/pentaho-solutions/system/pentaho-geo/dataimport/import_us_postalcode.ktr
      * is run with XmlMetaStore supplied to ConnectionManager
      *
-     * Then after that PurRepositoryMetaStore is supplied to ConnectionManager via provided PurRepository#connect
+     * Then after that, PurRepositoryMetaStore is supplied to ConnectionManager via provided PurRepository#connect
+     * initaited from Trans#fireTransFinishedListeners
      */
-    setXmlMetaStore();
+    //setXmlMetaStore(); first iteration on how to set ConnectionManager's metastore Connection Details
+    addXmlMetaStoreToPurRepositoryMetaStore();
 
     OutputStream pvfsOutputStream = KettleVFS.getOutputStream( fullPVFSFilePath, false);
 
@@ -159,6 +151,13 @@ public class PVFSRepositoryFileStreamProvider extends RepositoryFileStreamProvid
   }
 
   public void setXmlMetaStore() {
+    /**
+     * Get XMl metastore and override shared instance of ConnectionManager's metastore.
+     * Luckily, all the logic that needs ConnectionManger's metastore calls ConnectionManager#setMetastoreSupplier
+     * with the appropriate Metastore ie
+     *  UpdateAuditData uses XmlMetastore
+     *  some export logic uses PurRepositoryMetaStore
+     */
     ConnectionManager.getInstance().setMetastoreSupplier( () -> {
       try {
         return MetaStoreConst.openLocalPentahoMetaStore(); // POC should be XmlMetaStore ie  ~/.pentaho/metastore/pentaho/
@@ -166,6 +165,38 @@ public class PVFSRepositoryFileStreamProvider extends RepositoryFileStreamProvid
         throw new IllegalStateException( "could not creat XmlMetaStore object", e);
       }
     });
+  }
+
+  public void addXmlMetaStoreToPurRepositoryMetaStore() {
+    /**
+     * NOTE:
+     * Basically an import all VFS connections from XMl metastore into PurRepository
+     *
+     * so could use ConnectionManager#copy( IMetaStore sourceMetaStore, IMetaStore destinationMetaStore ).
+     * ConnectionManager#copy needs to ConnectionManager#copy( IMetaStore sourceMetaStore ),
+     * so no need to #getPurRepositoryMetaStore(),
+     */
+    try {
+      IMetaStore xmlMetastore = MetaStoreConst.openLocalPentahoMetaStore(); // configurable via property 'PENTAHO_METASTORE_FOLDER'
+      IMetaStore pucMetastore = getPurRepositoryMetaStore();
+      /*
+       TODO check each run doesn't add same connection details over,
+        verify underlying ConnectionDetails#equals is correctly overridden and implemented
+       */
+      ConnectionManager.getInstance().copy( xmlMetastore, pucMetastore  );
+    } catch ( MetaStoreException e ) {
+      throw new IllegalStateException( "could not copy XmlMetaStore object", e );
+    }
+  }
+
+  public IMetaStore getPurRepositoryMetaStore() throws MetaStoreException {
+    try {
+      // TODO look at cleaner way to get metatstore or ConnectionManager.metaStoreSupplier.get();
+      DIServerConfig sc  = new DIServerConfig( null, null );
+      return sc.getMetaStore().getActiveMetaStore();
+    } catch ( KettleException | MetaStoreException e ) {
+      throw new MetaStoreException( "could not getPurRepositoryMetaStore", e );
+    }
   }
 
   public String toString() {
