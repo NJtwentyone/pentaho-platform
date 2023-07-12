@@ -103,7 +103,7 @@ public class EmbeddedQuartzSystemListener implements IPentahoSystemListener {
           DataSource ds = datasourceService.getDataSource( dsName );
           result = verifyQuartzIsConfigured( ds );
         }
-        QuartzScheduler scheduler = (QuartzScheduler) PentahoSystem.get( IScheduler.class, "IScheduler2", null ); //$NON-NLS-1$
+        QuartzScheduler scheduler = (QuartzScheduler) getIScheduler(); //$NON-NLS-1$
         if ( logger.isDebugEnabled() ) {
           logger.debug( "Quartz configured with properties" ); //$NON-NLS-1$
           quartzProps.store( System.out, "debugging" ); //$NON-NLS-1$
@@ -255,7 +255,7 @@ public class EmbeddedQuartzSystemListener implements IPentahoSystemListener {
    */
   public void shutdown() {
     try {
-      QuartzScheduler scheduler = (QuartzScheduler) PentahoSystem.get( IScheduler.class, "IScheduler2", null ); //$NON-NLS-1$
+      QuartzScheduler scheduler = (QuartzScheduler) getIScheduler(); //$NON-NLS-1$
       scheduler.getQuartzScheduler().shutdown();
     } catch ( SchedulerException e ) {
       e.printStackTrace();
@@ -282,6 +282,28 @@ public class EmbeddedQuartzSystemListener implements IPentahoSystemListener {
     if ( quartzPropertiesFile != null ) {
       quartzProperties = null;
     }
+  }
+
+  protected IScheduler getIScheduler() {
+    /**
+     * calling PentahoSystem.get(clazz) so highest priority ranked class get returned. later
+     * pentaho-platform/core/src/main/java/org/pentaho/platform/engine/core/system/objfac/AggregateObjectFactory.java#get
+     *
+     * <code>
+     *     @Override
+     *   public <T> T get( Class<T> clazz, IPentahoSession session, Map<String, String> properties )
+     *       throws ObjectFactoryException {
+     *
+     *     IPentahoObjectReference<T> highestRef = this.getObjectReference( clazz, session, properties );
+     *
+     *     if ( highestRef != null ) {
+     *       return highestRef.getObject();
+     *     }
+     * </code>
+     *
+     */
+     // PentahoSystem.get( IScheduler.class, "IScheduler2", null );
+    return PentahoSystem.get( IScheduler.class );
   }
 
 }
