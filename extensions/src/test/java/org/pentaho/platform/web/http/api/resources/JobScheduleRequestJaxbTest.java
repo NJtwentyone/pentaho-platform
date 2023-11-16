@@ -40,6 +40,7 @@ import static org.junit.Assert.assertTrue;
 public class JobScheduleRequestJaxbTest {
 
 
+  // FIXME JSON does not work
   @Test
   public void testJaxbJson() throws Exception {
 
@@ -67,10 +68,45 @@ public class JobScheduleRequestJaxbTest {
     String jsonFileName = "jaxb/JobScheduleRequest_update.json";
     File jsonFileJobSchedulerRequest_update = new File(getClass().getClassLoader().getResource(jsonFileName).getFile());
     System.out.println( "TYOOOOOO: " + jsonFileJobSchedulerRequest_update.getAbsolutePath());
-    JobScheduleRequest jobScheduleRequestUpdate = (JobScheduleRequest) jaxbUnmarshaller.unmarshal( jsonFileJobSchedulerRequest_update );
+    JobScheduleRequest jobScheduleRequest = (JobScheduleRequest) jaxbUnmarshaller.unmarshal( jsonFileJobSchedulerRequest_update );
 
     //asserts
-    assertTrue(jobScheduleRequestUpdate.getJobParameters().size() > 0);
+    assertTrue(jobScheduleRequest.getJobParameters().size() > 0);
+
+  }
+
+  // NOTE: XML works
+  @Test
+  public void testJaxbXml() throws Exception {
+
+    //    System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
+
+    //Set the various properties you want
+    Map<String, Object> properties = new HashMap<>();
+//    properties.put(JAXBContextProperties.MEDIA_TYPE, "application/json");
+//    properties.put(JAXBContextProperties.JSON_INCLUDE_ROOT, true);
+
+    //    JAXBContext jaxbContext 	= JAXBContext.newInstance( JobScheduleRequest.class );
+    JAXBContext jaxbContext =
+      JAXBContextFactory.createContext(new Class[]  {
+        org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.JobScheduleRequest.class,    ObjectFactory.class}, properties);
+    //    JAXBContext jaxbContext = JAXBContext.newInstance(new Class[] {JobScheduleRequest.class}, properties);
+
+    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+
+    //    //Set JSON type
+    //    jaxbUnmarshaller.setProperty(JAXBContextProperties.MEDIA_TYPE, "application/json");
+    //    jaxbUnmarshaller.setProperty(JAXBContextProperties.JSON_INCLUDE_ROOT, true);
+
+    //Overloaded methods to unmarshal from different xml sources
+    String xmlFileName = "jaxb/JobScheduleRequest_create.xml";
+    File fileJobSchedulerRequest_update = new File(getClass().getClassLoader().getResource(xmlFileName).getFile());
+    System.out.println( "test file: " + fileJobSchedulerRequest_update.getAbsolutePath());
+    JobScheduleRequest jobScheduleRequest = (JobScheduleRequest) jaxbUnmarshaller.unmarshal( fileJobSchedulerRequest_update );
+
+    //asserts
+    assertTrue(jobScheduleRequest.getJobParameters().size() > 0);
 
   }
 }
