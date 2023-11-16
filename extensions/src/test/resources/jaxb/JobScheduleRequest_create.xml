@@ -1,0 +1,19 @@
+<jobScheduleRequest>
+  <jobName>TestJobName1</jobName>
+  <simpleJobTrigger>
+    <uiPassParam>MINUTES</uiPassParam>
+    <repeatInterval>1800</repeatInterval>
+    <repeatCount>-1</repeatCount>
+    <startTime>2014-08-14T11:46:00.000-04:00</startTime>
+    <endTime />
+  </simpleJobTrigger>
+  <inputFile>/public/Steel Wheels/Top Customers (report).prpt</inputFile>
+  <outputFile>/public/output</outputFile>
+  <jobParameters>
+<!--   <jobParameter> start: 1-->
+      <name>ParameterNameTest1</name>
+      <type>string</type>
+      <stringValue>false</stringValue>
+<!--    </jobParameter> end: 1-->
+  </jobParameters>
+</jobScheduleRequest>
