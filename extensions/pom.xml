@@ -2170,6 +2170,14 @@
       <version>${mockito-core.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- TEST JAXB -->
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.moxy</artifactId>
+<!--      <version>2.5.0</version>-->
+      <version>4.0.0</version>
+    </dependency>
+    <!-- TEST JAXB -->
     <dependency>
       <groupId>com.dumbster</groupId>
       <artifactId>dumbster</artifactId>
