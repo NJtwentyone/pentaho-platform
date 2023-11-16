@@ -18,7 +18,7 @@
  *
  */
 
-package org.pentaho.platform.plugin.services.importexport.exportManifest.bindings;
+package org.pentaho.platform.web.http.api.resources;
 
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.junit.Test;
@@ -27,6 +27,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
+import org.eclipse.persistence.jaxb.xmlmodel.ObjectFactory;
+
 
 import java.io.File;
 import java.util.HashMap;
