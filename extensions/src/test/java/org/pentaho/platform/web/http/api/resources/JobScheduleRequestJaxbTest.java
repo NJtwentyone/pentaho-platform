@@ -27,8 +27,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
-import org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.ObjectFactory; // TODO can we use generic org.eclipse.persistence.jaxb.xmlmodel.ObjectFactory ?
-
+import org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.ObjectFactory; // TODO can't use generic org.eclipse.persistence.jaxb.xmlmodel.ObjectFactory, need class configured for pentaho
 
 import java.io.File;
 import java.util.HashMap;
@@ -54,7 +53,8 @@ public class JobScheduleRequestJaxbTest {
 //    JAXBContext jaxbContext 	= JAXBContext.newInstance( JobScheduleRequest.class );
     JAXBContext jaxbContext =
       JAXBContextFactory.createContext(new Class[]  {
-        org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.JobScheduleRequest.class,    ObjectFactory.class}, properties); // FIXME can we use org.pentaho.platform.web.http.api.resources.JobScheduleRequest ?
+        // NOTE: seems like you can use either class  org.pentaho.platform.web.http.api.resources.JobScheduleRequest or org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.JobScheduleRequest
+        JobScheduleRequest.class,    ObjectFactory.class}, properties);
 //    JAXBContext jaxbContext = JAXBContext.newInstance(new Class[] {JobScheduleRequest.class}, properties);
 
     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -79,25 +79,14 @@ public class JobScheduleRequestJaxbTest {
   @Test
   public void testJaxbXml() throws Exception {
 
-    //    System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
-
-    //Set the various properties you want
     Map<String, Object> properties = new HashMap<>();
-//    properties.put(JAXBContextProperties.MEDIA_TYPE, "application/json");
-//    properties.put(JAXBContextProperties.JSON_INCLUDE_ROOT, true);
-
-    //    JAXBContext jaxbContext 	= JAXBContext.newInstance( JobScheduleRequest.class );
     JAXBContext jaxbContext =
       JAXBContextFactory.createContext(new Class[]  {
-        org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.JobScheduleRequest.class,    ObjectFactory.class}, properties);
+        // NOTE: seems like you can use either class org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.JobScheduleRequest or org.pentaho.platform.web.http.api.resources.JobScheduleRequest
+        JobScheduleRequest.class,    ObjectFactory.class}, properties);
     //    JAXBContext jaxbContext = JAXBContext.newInstance(new Class[] {JobScheduleRequest.class}, properties);
 
     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-
-
-    //    //Set JSON type
-    //    jaxbUnmarshaller.setProperty(JAXBContextProperties.MEDIA_TYPE, "application/json");
-    //    jaxbUnmarshaller.setProperty(JAXBContextProperties.JSON_INCLUDE_ROOT, true);
 
     //Overloaded methods to unmarshal from different xml sources
     String xmlFileName = "jaxb/JobScheduleRequest_create.xml";
