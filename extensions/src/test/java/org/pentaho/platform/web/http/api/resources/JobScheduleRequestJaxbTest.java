@@ -27,7 +27,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
-import org.eclipse.persistence.jaxb.xmlmodel.ObjectFactory;
+import org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.ObjectFactory;
 
 
 import java.io.File;
@@ -41,19 +41,19 @@ public class JobScheduleRequestJaxbTest {
 
 
   @Test
-  public void testJaxb() throws Exception {
+  public void testJaxbJson() throws Exception {
 
 //    System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
 
     //Set the various properties you want
     Map<String, Object> properties = new HashMap<>();
     properties.put(JAXBContextProperties.MEDIA_TYPE, "application/json");
-    properties.put(JAXBContextProperties.JSON_INCLUDE_ROOT, true);
+    properties.put(JAXBContextProperties.JSON_INCLUDE_ROOT, false);
 
 //    JAXBContext jaxbContext 	= JAXBContext.newInstance( JobScheduleRequest.class );
     JAXBContext jaxbContext =
       JAXBContextFactory.createContext(new Class[]  {
-        JobScheduleRequest.class,    ObjectFactory.class}, properties);
+        org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.JobScheduleRequest.class,    ObjectFactory.class}, properties);
 //    JAXBContext jaxbContext = JAXBContext.newInstance(new Class[] {JobScheduleRequest.class}, properties);
 
     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -64,7 +64,7 @@ public class JobScheduleRequestJaxbTest {
 //    jaxbUnmarshaller.setProperty(JAXBContextProperties.JSON_INCLUDE_ROOT, true);
 
     //Overloaded methods to unmarshal from different xml sources
-    String jsonFileName = "JobScheduleRequest_update.json";
+    String jsonFileName = "jaxb/JobScheduleRequest_update.json";
     File jsonFileJobSchedulerRequest_update = new File(getClass().getClassLoader().getResource(jsonFileName).getFile());
     System.out.println( "TYOOOOOO: " + jsonFileJobSchedulerRequest_update.getAbsolutePath());
     JobScheduleRequest jobScheduleRequestUpdate = (JobScheduleRequest) jaxbUnmarshaller.unmarshal( jsonFileJobSchedulerRequest_update );
