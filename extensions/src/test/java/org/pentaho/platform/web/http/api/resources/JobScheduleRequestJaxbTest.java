@@ -34,6 +34,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 //POC
@@ -43,7 +44,6 @@ public class JobScheduleRequestJaxbTest {
   // FIXME JSON does not work
   @Test
   public void testJaxbJson() throws Exception {
-
 //    System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
 
     //Set the various properties you want
@@ -107,6 +107,9 @@ public class JobScheduleRequestJaxbTest {
 
     //asserts
     assertTrue(jobScheduleRequest.getJobParameters().size() > 0);
+    assertEquals("ParameterNameTest", jobScheduleRequest.getJobParameters().get( 0 ).getName());
+    assertEquals("string", jobScheduleRequest.getJobParameters().get( 0 ).getType());
+    assertTrue(jobScheduleRequest.getJobParameters().get( 0 ).getStringValue().contains( "false" ));
 
   }
 }

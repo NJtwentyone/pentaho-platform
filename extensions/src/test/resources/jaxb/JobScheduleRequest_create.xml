@@ -10,10 +10,10 @@
   <inputFile>/public/Steel Wheels/Top Customers (report).prpt</inputFile>
   <outputFile>/public/output</outputFile>
   <jobParameters>
-    <jobParameter>
-      <name>ParameterName</name>
+<!--   <jobParameter> start: 1-->
+      <name>ParameterNameTest</name>
       <type>string</type>
       <stringValue>false</stringValue>
-    </jobParameter>
+<!--    </jobParameter> end: 1-->
   </jobParameters>
 </jobScheduleRequest>
