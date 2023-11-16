@@ -20,6 +20,7 @@
 
 package org.pentaho.platform.plugin.services.importexport.exportManifest.bindings;
 
+import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.junit.Test;
 
 import javax.xml.bind.JAXBContext;
@@ -28,6 +29,8 @@ import javax.xml.bind.Unmarshaller;
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 
@@ -38,17 +41,27 @@ public class JobScheduleRequestJaxbTest {
   @Test
   public void testJaxb() throws Exception {
 
-    JAXBContext jaxbContext 	= JAXBContext.newInstance( JobScheduleRequest.class );
+
+    //Set the various properties you want
+    Map<String, Object> properties = new HashMap<>();
+    properties.put(JAXBContextProperties.MEDIA_TYPE, "application/json");
+    properties.put(JAXBContextProperties.JSON_INCLUDE_ROOT, true);
+
+//    JAXBContext jaxbContext 	= JAXBContext.newInstance( JobScheduleRequest.class );
+    JAXBContext jaxbContext =
+      JAXBContextFactory.createContext(new Class[]  {
+        JobScheduleRequest.class,    ObjectFactory.class}, properties);
     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
 
-    //Set JSON type
-    jaxbUnmarshaller.setProperty(JAXBContextProperties.MEDIA_TYPE, "application/json");
-    jaxbUnmarshaller.setProperty(JAXBContextProperties.JSON_INCLUDE_ROOT, true);
+//    //Set JSON type
+//    jaxbUnmarshaller.setProperty(JAXBContextProperties.MEDIA_TYPE, "application/json");
+//    jaxbUnmarshaller.setProperty(JAXBContextProperties.JSON_INCLUDE_ROOT, true);
 
     //Overloaded methods to unmarshal from different xml sources
     String jsonFileName = "JobScheduleRequest_update.json";
     File jsonFileJobSchedulerRequest_update = new File(getClass().getClassLoader().getResource(jsonFileName).getFile());
+    System.out.println( "TYOOOOOO: " + jsonFileJobSchedulerRequest_update.getAbsolutePath());
     JobScheduleRequest jobScheduleRequestUpdate = (JobScheduleRequest) jaxbUnmarshaller.unmarshal( jsonFileJobSchedulerRequest_update );
 
     //asserts
