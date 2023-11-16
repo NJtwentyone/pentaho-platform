@@ -27,7 +27,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
-import org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.ObjectFactory;
+import org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.ObjectFactory; // TODO can we use generic org.eclipse.persistence.jaxb.xmlmodel.ObjectFactory ?
 
 
 import java.io.File;
@@ -54,7 +54,7 @@ public class JobScheduleRequestJaxbTest {
 //    JAXBContext jaxbContext 	= JAXBContext.newInstance( JobScheduleRequest.class );
     JAXBContext jaxbContext =
       JAXBContextFactory.createContext(new Class[]  {
-        org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.JobScheduleRequest.class,    ObjectFactory.class}, properties);
+        org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.JobScheduleRequest.class,    ObjectFactory.class}, properties); // FIXME can we use org.pentaho.platform.web.http.api.resources.JobScheduleRequest ?
 //    JAXBContext jaxbContext = JAXBContext.newInstance(new Class[] {JobScheduleRequest.class}, properties);
 
     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
