@@ -43,6 +43,7 @@ public class JobScheduleRequestJaxbTest {
   @Test
   public void testJaxb() throws Exception {
 
+//    System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
 
     //Set the various properties you want
     Map<String, Object> properties = new HashMap<>();
@@ -53,6 +54,8 @@ public class JobScheduleRequestJaxbTest {
     JAXBContext jaxbContext =
       JAXBContextFactory.createContext(new Class[]  {
         JobScheduleRequest.class,    ObjectFactory.class}, properties);
+//    JAXBContext jaxbContext = JAXBContext.newInstance(new Class[] {JobScheduleRequest.class}, properties);
+
     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
 
