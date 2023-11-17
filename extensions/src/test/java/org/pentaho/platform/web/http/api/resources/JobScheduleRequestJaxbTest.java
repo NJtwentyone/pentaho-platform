@@ -53,7 +53,7 @@ public class JobScheduleRequestJaxbTest {
     properties.put(JAXBContextProperties.MEDIA_TYPE, "application/json");
     properties.put(JAXBContextProperties.JSON_INCLUDE_ROOT, false);
 
-//    JAXBContext jaxbContext 	= JAXBContext.newInstance( JobScheduleRequest.class );
+    // NOTE: have to setup jaxBContext with JAXBContextFactory.createContext(...) can not use JAXBContext.newInstance(...) due to no standard xml/json formats
     JAXBContext jaxbContext =
       JAXBContextFactory.createContext(new Class[]  {
         // NOTE: seems like you can use either class  org.pentaho.platform.web.http.api.resources.JobScheduleRequest or org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.JobScheduleRequest
@@ -62,16 +62,10 @@ public class JobScheduleRequestJaxbTest {
 
     Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
-
-//    //Set JSON type
-//    jaxbUnmarshaller.setProperty(JAXBContextProperties.MEDIA_TYPE, "application/json");
-//    jaxbUnmarshaller.setProperty(JAXBContextProperties.JSON_INCLUDE_ROOT, true);
-
     //Overloaded methods to unmarshal from different xml sources
     String jsonFileName = "jaxb/JobScheduleRequest_update.json";
     File jsonFileJobSchedulerRequest_update = new File(getClass().getClassLoader().getResource(jsonFileName).getFile());
     StreamSource streamSource = new StreamSource(jsonFileJobSchedulerRequest_update);
-    System.out.println( "TYOOOOOO: " + jsonFileJobSchedulerRequest_update.getAbsolutePath());
     //NOTE: including class to give unmarshaller a hint, otherwise will get error related to jobName not found
     JobScheduleRequest jobScheduleRequest = jaxbUnmarshaller.unmarshal( streamSource, JobScheduleRequest.class ).getValue();
 
@@ -100,7 +94,6 @@ public class JobScheduleRequestJaxbTest {
     //Overloaded methods to unmarshal from different xml sources
     String xmlFileName = "jaxb/JobScheduleRequest_create.xml";
     File fileJobSchedulerRequest_update = new File(getClass().getClassLoader().getResource(xmlFileName).getFile());
-    System.out.println( "test file: " + fileJobSchedulerRequest_update.getAbsolutePath());
     JobScheduleRequest jobScheduleRequest = (JobScheduleRequest) jaxbUnmarshaller.unmarshal( fileJobSchedulerRequest_update );
 
     //asserts
