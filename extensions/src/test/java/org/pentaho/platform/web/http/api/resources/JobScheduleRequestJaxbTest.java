@@ -14,26 +14,20 @@
  * See the GNU Lesser General Public License for more details.
  *
  *
- * Copyright (c) 2002-2018 Hitachi Vantara. All rights reserved.
+ * Copyright (c) 2023 Hitachi Vantara. All rights reserved.
  *
  */
 
 package org.pentaho.platform.web.http.api.resources;
 
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
+import org.eclipse.persistence.jaxb.JAXBContextProperties;
 import org.junit.Test;
+import org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.ObjectFactory;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
-
-import org.eclipse.persistence.jaxb.JAXBContextProperties;
-import org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.ObjectFactory; // TODO can't use generic org.eclipse.persistence.jaxb.xmlmodel.ObjectFactory, need class configured for pentaho
-
-import org.eclipse.persistence.jaxb.MarshallerProperties;
-import org.eclipse.persistence.jaxb.UnmarshallerProperties;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +44,7 @@ public class JobScheduleRequestJaxbTest {
 
     //Set the various properties you want
     Map<String, Object> properties = new HashMap<>();
+    // NOTE could also use org.eclipse.persistence.jaxb.UnmarshallerProperties.MEDIA_TYPE, using JAXBContextProperties to future proof code
     properties.put(JAXBContextProperties.MEDIA_TYPE, "application/json");
     properties.put(JAXBContextProperties.JSON_INCLUDE_ROOT, false);
 
@@ -77,8 +72,6 @@ public class JobScheduleRequestJaxbTest {
     assertEquals("[[Product].[All Products].[Classic Cars]]", jobScheduleRequest.getJobParameters().get( 0 ).getStringValue().toString());
 
   }
-
-  // NOTE: XML works
   @Test
   public void testJaxbXml() throws Exception {
 
@@ -104,6 +97,4 @@ public class JobScheduleRequestJaxbTest {
     assertTrue(jobScheduleRequest.getJobParameters().get( 0 ).getStringValue().contains( "false" ));
 
   }
-
-
 }
