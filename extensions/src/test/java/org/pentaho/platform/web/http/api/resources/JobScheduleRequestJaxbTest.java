@@ -45,8 +45,8 @@ import static org.junit.Assert.assertTrue;
 public class JobScheduleRequestJaxbTest {
   @Test
   public void testJaxbJson() throws Exception {
-    // declare in System or add property file in root of resource folder
-    System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
+    // not needed, but in future -  declare in System or add property file in root of resource folder
+//    System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
 
     //Set the various properties you want
     Map<String, Object> properties = new HashMap<>();
