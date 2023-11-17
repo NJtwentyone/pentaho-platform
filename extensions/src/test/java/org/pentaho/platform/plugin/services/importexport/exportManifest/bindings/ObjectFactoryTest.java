@@ -170,7 +170,7 @@ public class ObjectFactoryTest {
 
   @Test
   public void testCreateJobScheduleParam() throws Exception {
-    assertNotNull( factory.createJobScheduleParam() );
+    assertNotNull( factory.createJobScheduleParam(mock(JobScheduleParam.class)) );
   }
 
   @Test

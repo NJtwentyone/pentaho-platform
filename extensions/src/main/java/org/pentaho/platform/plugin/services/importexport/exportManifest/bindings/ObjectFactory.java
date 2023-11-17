@@ -27,8 +27,6 @@
 
 package org.pentaho.platform.plugin.services.importexport.exportManifest.bindings;
 
-import org.pentaho.platform.api.scheduler.JobScheduleParam;
-
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
@@ -71,6 +69,9 @@ public class ObjectFactory {
       "qualifiedDayOfWeek" );
   private static final QName _ComplexJobTrigger_QNAME = new QName( "http://www.pentaho.com/schema/",
       "complexJobTrigger" );
+
+  private static final QName _JobScheduleParam_QNAME = new QName( "http://www.pentaho.com/schema/",
+                                                                     "jobScheduleParam" );
 
   /**
    * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package:
@@ -417,6 +418,11 @@ public class ObjectFactory {
   @XmlElementDecl( namespace = "http://www.pentaho.com/schema/", name = "jobScheduleRequest" )
   public JAXBElement<JobScheduleRequest> createJobScheduleRequest( JobScheduleRequest value ) {
     return new JAXBElement<JobScheduleRequest>( _JobScheduleRequest_QNAME, JobScheduleRequest.class, null, value );
+  }
+
+  @XmlElementDecl( namespace = "http://www.pentaho.com/schema/", name = "jobScheduleParam" )
+  public JAXBElement<JobScheduleParam> createJobScheduleParam( JobScheduleParam value ) {
+    return new JAXBElement<JobScheduleParam>( _JobScheduleParam_QNAME, JobScheduleParam.class, null, value );
   }
 
   /**

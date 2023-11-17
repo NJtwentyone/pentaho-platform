@@ -27,7 +27,6 @@
 
 package org.pentaho.platform.plugin.services.importexport.exportManifest.bindings;
 
-import org.pentaho.platform.api.scheduler.JobScheduleParam;
 import org.pentaho.platform.api.scheduler2.IJob;
 import org.pentaho.platform.api.scheduler2.JobState;
 
@@ -37,6 +36,7 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -87,6 +87,7 @@ public class JobScheduleRequest {
   protected String jobName;
   protected String jobId;
   @XmlElement( nillable = true )
+//  @XmlAnyElement
   protected List<JobScheduleParam> jobParameters;
   protected String outputFile;
   @XmlElement( namespace = "http://www.pentaho.com/schema/" )

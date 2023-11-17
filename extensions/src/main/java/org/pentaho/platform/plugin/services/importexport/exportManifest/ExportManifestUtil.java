@@ -20,7 +20,6 @@
 
 package org.pentaho.platform.plugin.services.importexport.exportManifest;
 
-import org.pentaho.platform.api.scheduler.JobScheduleParam;
 import org.pentaho.platform.api.scheduler2.ICronJobTrigger;
 import org.pentaho.platform.api.scheduler2.IJobScheduleParam;
 import org.pentaho.platform.api.scheduler2.IJobScheduleRequest;
@@ -30,6 +29,7 @@ import org.pentaho.platform.engine.core.system.PentahoSystem;
 import org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.CronJobTrigger;
 import org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.JobScheduleRequest;
 import org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.SimpleJobTrigger;
+import org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.JobScheduleParam;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,7 +67,8 @@ public class ExportManifestUtil {
       JobScheduleParam outgoingParam = new JobScheduleParam();
       outgoingParam.setName( incomingParam.getName() );
       outgoingParam.setType( incomingParam.getType() );
-      outgoingParam.setStringValue( incomingParam.getStringValue() );
+      outgoingParam.getStringValue().clear();
+      outgoingParam.getStringValue().addAll(  incomingParam.getStringValue() );
       outgoingParams.add( outgoingParam );
     }
     return outgoingParams;
