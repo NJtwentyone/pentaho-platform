@@ -24,10 +24,15 @@ import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.junit.Test;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
 import org.pentaho.platform.plugin.services.importexport.exportManifest.bindings.ObjectFactory; // TODO can't use generic org.eclipse.persistence.jaxb.xmlmodel.ObjectFactory, need class configured for pentaho
+
+import org.eclipse.persistence.jaxb.MarshallerProperties;
+import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 
 import java.io.File;
 import java.util.HashMap;
@@ -43,7 +48,7 @@ public class JobScheduleRequestJaxbTest {
   // FIXME JSON does not work
   @Test
   public void testJaxbJson() throws Exception {
-//    System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
+    System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
 
     //Set the various properties you want
     Map<String, Object> properties = new HashMap<>();
@@ -67,8 +72,10 @@ public class JobScheduleRequestJaxbTest {
     //Overloaded methods to unmarshal from different xml sources
     String jsonFileName = "jaxb/JobScheduleRequest_update.json";
     File jsonFileJobSchedulerRequest_update = new File(getClass().getClassLoader().getResource(jsonFileName).getFile());
+    StreamSource streamSource = new StreamSource(jsonFileJobSchedulerRequest_update);
     System.out.println( "TYOOOOOO: " + jsonFileJobSchedulerRequest_update.getAbsolutePath());
-    JobScheduleRequest jobScheduleRequest = (JobScheduleRequest) jaxbUnmarshaller.unmarshal( jsonFileJobSchedulerRequest_update );
+    //NOTE: including class to give unmarshaller a hint, otherwise will get error related to jobName not found
+    JobScheduleRequest jobScheduleRequest = (JobScheduleRequest) jaxbUnmarshaller.unmarshal( streamSource, JobScheduleRequest.class ).getValue();
 
     //asserts
     assertTrue(jobScheduleRequest.getJobParameters().size() > 0);
@@ -101,4 +108,5 @@ public class JobScheduleRequestJaxbTest {
     assertTrue(jobScheduleRequest.getJobParameters().get( 0 ).getStringValue().contains( "false" ));
 
   }
+
 }
