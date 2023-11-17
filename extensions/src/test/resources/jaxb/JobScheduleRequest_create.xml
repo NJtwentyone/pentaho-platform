@@ -1,5 +1,5 @@
 <jobScheduleRequest>
-  <jobName>JobName</jobName>
+  <jobName>TestJobName1</jobName>
   <simpleJobTrigger>
     <uiPassParam>MINUTES</uiPassParam>
     <repeatInterval>1800</repeatInterval>
@@ -11,7 +11,7 @@
   <outputFile>/public/output</outputFile>
   <jobParameters>
 <!--   <jobParameter> start: 1-->
-      <name>ParameterNameTest</name>
+      <name>ParameterNameTest1</name>
       <type>string</type>
       <stringValue>false</stringValue>
 <!--    </jobParameter> end: 1-->

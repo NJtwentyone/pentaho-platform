@@ -43,11 +43,9 @@ import static org.junit.Assert.assertTrue;
 
 //POC
 public class JobScheduleRequestJaxbTest {
-
-
-  // FIXME JSON does not work
   @Test
   public void testJaxbJson() throws Exception {
+    // declare in System or add property file in root of resource folder
     System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
 
     //Set the various properties you want
@@ -75,10 +73,14 @@ public class JobScheduleRequestJaxbTest {
     StreamSource streamSource = new StreamSource(jsonFileJobSchedulerRequest_update);
     System.out.println( "TYOOOOOO: " + jsonFileJobSchedulerRequest_update.getAbsolutePath());
     //NOTE: including class to give unmarshaller a hint, otherwise will get error related to jobName not found
-    JobScheduleRequest jobScheduleRequest = (JobScheduleRequest) jaxbUnmarshaller.unmarshal( streamSource, JobScheduleRequest.class ).getValue();
+    JobScheduleRequest jobScheduleRequest = jaxbUnmarshaller.unmarshal( streamSource, JobScheduleRequest.class ).getValue();
 
     //asserts
-    assertTrue(jobScheduleRequest.getJobParameters().size() > 0);
+    assertEquals( "Top Customers (report)-manual-edit-", jobScheduleRequest.getJobName() );
+    assertTrue(jobScheduleRequest.getJobParameters().size() > 8);
+    assertEquals("sLine", jobScheduleRequest.getJobParameters().get( 0 ).getName());
+    assertEquals("string", jobScheduleRequest.getJobParameters().get( 0 ).getType());
+    assertEquals("[[Product].[All Products].[Classic Cars]]", jobScheduleRequest.getJobParameters().get( 0 ).getStringValue().toString());
 
   }
 
@@ -102,11 +104,13 @@ public class JobScheduleRequestJaxbTest {
     JobScheduleRequest jobScheduleRequest = (JobScheduleRequest) jaxbUnmarshaller.unmarshal( fileJobSchedulerRequest_update );
 
     //asserts
+    assertEquals( "TestJobName1", jobScheduleRequest.getJobName() );
     assertTrue(jobScheduleRequest.getJobParameters().size() > 0);
-    assertEquals("ParameterNameTest", jobScheduleRequest.getJobParameters().get( 0 ).getName());
+    assertEquals("ParameterNameTest1", jobScheduleRequest.getJobParameters().get( 0 ).getName());
     assertEquals("string", jobScheduleRequest.getJobParameters().get( 0 ).getType());
     assertTrue(jobScheduleRequest.getJobParameters().get( 0 ).getStringValue().contains( "false" ));
 
   }
+
 
 }
