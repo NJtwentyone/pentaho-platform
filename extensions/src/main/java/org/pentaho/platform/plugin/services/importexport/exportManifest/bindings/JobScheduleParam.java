@@ -59,7 +59,7 @@ import java.util.List;
  * 
  * 
  */
-@XmlRootElement
+//@XmlRootElement
 @XmlAccessorType( XmlAccessType.FIELD )
 @XmlType( name = "jobScheduleParam", propOrder = { "name", "stringValue", "type" } )
 public class JobScheduleParam {
