@@ -361,7 +361,8 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <version>${hibernate-core.version}</version>
-      <scope>compile</scope>
+      <!-- DEV Removing scope for it test -->
+<!--      <scope>compile</scope>-->
       <exclusions>
         <exclusion>
           <artifactId>*</artifactId>
