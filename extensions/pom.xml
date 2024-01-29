@@ -477,6 +477,21 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- DEV start -->
+    <!-- TODO deployed version is 'com.mchang:c3p0:0.9.1.2.jar' which might have a CVE, latest 0.9.5 does not - https://mvnrepository.com/artifact/com.mchange/c3p0 -->
+    <dependency>
+      <groupId>com.mchange</groupId>
+      <artifactId>c3p0</artifactId>
+      <version>0.9.5.5</version>
+    </dependency>
+<!-- DEV fixing java.lang.ClassNotFoundException: javax.validation.ParameterNameProvider -->
+    <!-- this will class with javax.validation:validation-api:1.0.0.GA in this pom -->
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>2.0.2</version>
+    </dependency>
+    <!-- DEV end -->
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-ehcache</artifactId>
