@@ -135,8 +135,12 @@ public class LastModifiedCache implements ILastModifiedCacheItem, HvCache {
   @Override public void evictEntityData( String entityName ) {
     try {
       evictEntityData( getSessionFactory().getMetamodel().entityPersister( entityName ) );
-    } catch ( MappingException e) {
+    } catch ( Exception e ) {
       //Nothing to do if the entry is not there.
+      /** DEV DO NOT MERGE **/
+      /** NEWLY ADDED LOG STATEMENTS **/
+      String errorMessage = String.format( "!!!!!!!!!!!!!! evictEntityData(entityName) failed on '%s'", entityName );
+      LOGGER.error( errorMessage, e );
     }
   }
 
