@@ -318,7 +318,9 @@ public class CacheManager implements ICacheManager {
       Cache cache = regionCache.get( region );
       if ( cache != null ) {
         try {
-          cache.evictAll();
+//          cache.evictAll();
+          cache.evictAllRegions(); // POC closer to real solution
+//            cache.evictNaturalIdData();
         } catch ( CacheException e ) {
           CacheManager.logger.error( Messages.getInstance().getString(
             "CacheManager.ERROR_0006_CACHE_EXCEPTION", e.getLocalizedMessage() ) ); //$NON-NLS-1$
@@ -400,7 +402,11 @@ public class CacheManager implements ICacheManager {
   public void removeFromRegionCache( String region, Object key ) {
     if ( checkRegionEnabled( region ) ) {
       HvCache hvcache = (HvCache) regionCache.get( region );
-      hvcache.evictEntityData( (String) key );
+      if ( key instanceof String ) { // POC for simple keys that are not objects
+        hvcache.evictNaturalIdData((String)key);
+      } else {
+        hvcache.evictEntityData( (String) key );
+      }
     } else {
       CacheManager.logger.warn( Messages.getInstance().getString(
         "CacheManager.WARN_0003_REGION_DOES_NOT_EXIST", region ) ); //$NON-NLS-1$
@@ -419,7 +425,8 @@ public class CacheManager implements ICacheManager {
         String key = ( entry.getKey() != null ) ? entry.getKey().toString() : ""; //$NON-NLS-1$
         if ( key != null ) {
           Cache cache = regionCache.get( key );
-          cache.evictAll();
+//          cache.evictAll();
+            removeRegionCache( key );// POC using new impl to delete regions -> deletes everyting
         }
       }
     }
@@ -444,7 +451,9 @@ public class CacheManager implements ICacheManager {
           while ( it.hasNext() ) {
             String key = (String) it.next();
             if ( key.indexOf( session.getId() ) >= 0 ) {
-              hvcache.evictEntityData( key );
+//              hvcache.evictEntityData( key );
+                hvcache.evictNaturalIdData(key); // POC - same logic as #removeFromRegionCache( String region, Object key )
+              // TODO verify this is satisfactory approach + look at hibernate and ehcache documentation
             }
           }
         }

@@ -135,8 +135,12 @@ public class LastModifiedCache implements ILastModifiedCacheItem, HvCache {
   @Override public void evictEntityData( String entityName ) {
     try {
       evictEntityData( getSessionFactory().getMetamodel().entityPersister( entityName ) );
-    } catch ( MappingException e) {
+    } catch ( Exception e ) {
       //Nothing to do if the entry is not there.
+      /** DEV DO NOT MERGE **/
+      /** NEWLY ADDED LOG STATEMENTS **/
+      String errorMessage = String.format( "!!!!!!!!!!!!!! evictEntityData(entityName) failed on '%s'", entityName );
+      LOGGER.error( errorMessage, e );
     }
   }
 
@@ -150,8 +154,8 @@ public class LastModifiedCache implements ILastModifiedCacheItem, HvCache {
   }
 
   @Override
-  public void evictNaturalIdData( String entityName ) {
-    throwNotImplemented();
+  public void evictNaturalIdData( String entityName ) { // TODO change arg to key
+    this.getStorageAccess().evictData( entityName); // DEV POC
   }
 
   @Override
@@ -281,5 +285,9 @@ public class LastModifiedCache implements ILastModifiedCacheItem, HvCache {
 
   private void throwNotImplemented(){
     throw new NotImplementedException( "Method not Implemented with upgrade to hibernate 5.4.24");
+  }
+
+  @Override public void evictAllRegions()  {
+    getCache().removeAll(); // POC removing everything, don't need to be fine grain
   }
 }
