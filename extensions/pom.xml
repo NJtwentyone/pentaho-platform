@@ -455,7 +455,8 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <version>${hibernate-core.version}</version>
-      <scope>compile</scope>
+      <!-- DEV Removing scope for it test -->
+<!--      <scope>compile</scope>-->
       <exclusions>
         <exclusion>
           <artifactId>*</artifactId>
@@ -467,7 +468,8 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-c3p0</artifactId>
       <version>${hibernate-c3p0.version}</version>
-      <scope>compile</scope>
+      <!-- DEV Removing scope for it test -->
+<!--      <scope>compile</scope>-->
       <exclusions>
         <exclusion>
           <artifactId>*</artifactId>
@@ -550,7 +552,8 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
       <version>${hibernate-validator.version}</version>
-      <scope>compile</scope>
+      <!-- DEV Removing scope for it test -->
+<!--      <scope>compile</scope>-->
       <exclusions>
         <exclusion>
           <artifactId>*</artifactId>
