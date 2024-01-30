@@ -451,7 +451,8 @@ public class CacheManager implements ICacheManager {
           while ( it.hasNext() ) {
             String key = (String) it.next();
             if ( key.indexOf( session.getId() ) >= 0 ) {
-              hvcache.evictEntityData( key );
+//              hvcache.evictEntityData( key );
+                hvcache.evictNaturalIdData(key); // POC - same logic as #removeFromRegionCache( String region, Object key )
             }
           }
         }
