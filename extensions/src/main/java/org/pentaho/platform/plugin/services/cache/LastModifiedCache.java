@@ -286,4 +286,8 @@ public class LastModifiedCache implements ILastModifiedCacheItem, HvCache {
   private void throwNotImplemented(){
     throw new NotImplementedException( "Method not Implemented with upgrade to hibernate 5.4.24");
   }
+
+  @Override public void evictAllRegions()  {
+    getCache().removeAll(); // POC removing everything, don't need to be fine grain
+  }
 }

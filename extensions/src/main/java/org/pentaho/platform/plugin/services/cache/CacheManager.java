@@ -318,7 +318,9 @@ public class CacheManager implements ICacheManager {
       Cache cache = regionCache.get( region );
       if ( cache != null ) {
         try {
-          cache.evictAll();
+//          cache.evictAll();
+          cache.evictAllRegions(); // POC closer to real solution
+//            cache.evictNaturalIdData();
         } catch ( CacheException e ) {
           CacheManager.logger.error( Messages.getInstance().getString(
             "CacheManager.ERROR_0006_CACHE_EXCEPTION", e.getLocalizedMessage() ) ); //$NON-NLS-1$
@@ -423,7 +425,8 @@ public class CacheManager implements ICacheManager {
         String key = ( entry.getKey() != null ) ? entry.getKey().toString() : ""; //$NON-NLS-1$
         if ( key != null ) {
           Cache cache = regionCache.get( key );
-          cache.evictAll();
+//          cache.evictAll();
+            removeRegionCache( key );// POC using new impl to delete regions -> deletes everyting
         }
       }
     }
