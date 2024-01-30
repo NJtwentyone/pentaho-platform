@@ -154,8 +154,8 @@ public class LastModifiedCache implements ILastModifiedCacheItem, HvCache {
   }
 
   @Override
-  public void evictNaturalIdData( String entityName ) {
-    throwNotImplemented();
+  public void evictNaturalIdData( String entityName ) { // TODO change arg to key
+    this.getStorageAccess().evictData( entityName); // DEV POC
   }
 
   @Override

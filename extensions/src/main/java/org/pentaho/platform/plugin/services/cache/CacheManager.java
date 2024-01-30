@@ -400,7 +400,11 @@ public class CacheManager implements ICacheManager {
   public void removeFromRegionCache( String region, Object key ) {
     if ( checkRegionEnabled( region ) ) {
       HvCache hvcache = (HvCache) regionCache.get( region );
-      hvcache.evictEntityData( (String) key );
+      if ( key instanceof String ) { // POC for simple keys that are not objects
+        hvcache.evictNaturalIdData((String)key);
+      } else {
+        hvcache.evictEntityData( (String) key );
+      }
     } else {
       CacheManager.logger.warn( Messages.getInstance().getString(
         "CacheManager.WARN_0003_REGION_DOES_NOT_EXIST", region ) ); //$NON-NLS-1$
