@@ -20,6 +20,7 @@
 
 package org.pentaho.platform.repository2.unified.webservices.jaxws;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
+import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.platform.api.locale.IPentahoLocale;
 import org.pentaho.platform.api.repository2.unified.IRepositoryFileData;
 import org.pentaho.platform.api.repository2.unified.IUnifiedRepository;
@@ -276,8 +278,12 @@ public class UnifiedRepositoryToWebServiceAdapter implements IUnifiedRepository 
     // path = path.replaceAll( ";", "/" ); //Why is it here?
     try {
       return repositoryFileAdapter.unmarshal( repoWebService.getFile( path, false, null ) );
-    } catch ( Throwable e ) { // java.lang.IllegalAccessError is thrown
-      throw e;
+    } catch ( IOException e ) {
+      // Before POC the #getFile was returning java.lang.reflect.InvocationTargetException when path = <null>, and now it returns IOException
+      // it had no information about the root cause exception from the server side workflow
+      // POC rethrowing IOException didn't want to change all the method signatures
+
+      throw new RuntimeException( e );
     }
   }
 
@@ -295,7 +301,11 @@ public class UnifiedRepositoryToWebServiceAdapter implements IUnifiedRepository 
 
   @Override
   public RepositoryFile getFile( String path, boolean loadLocaleMaps ) {
-    return this.repositoryFileAdapter.unmarshal( this.repoWebService.getFile( path, loadLocaleMaps, null ) );
+    try {
+      return this.repositoryFileAdapter.unmarshal( this.repoWebService.getFile( path, loadLocaleMaps, null ) );
+    } catch ( IOException e ) {
+      throw new RuntimeException( e );
+    }
   }
 
   @Override
@@ -306,7 +316,11 @@ public class UnifiedRepositoryToWebServiceAdapter implements IUnifiedRepository 
 
   @Override
   public RepositoryFile getFile( String path, IPentahoLocale locale ) {
-    return this.repositoryFileAdapter.unmarshal( this.repoWebService.getFile( path, false, (PentahoLocale) locale ) );
+    try {
+      return this.repositoryFileAdapter.unmarshal( this.repoWebService.getFile( path, false, (PentahoLocale) locale ) );
+    } catch ( IOException e ) {
+      throw new RuntimeException( e );
+    }
   }
 
   @Override
@@ -317,8 +331,12 @@ public class UnifiedRepositoryToWebServiceAdapter implements IUnifiedRepository 
 
   @Override
   public RepositoryFile getFile( String path, boolean loadLocaleMaps, IPentahoLocale locale ) {
-    return this.repositoryFileAdapter.unmarshal( this.repoWebService.getFile( path, loadLocaleMaps,
-        (PentahoLocale) locale ) );
+    try {
+      return this.repositoryFileAdapter.unmarshal( this.repoWebService.getFile( path, loadLocaleMaps,
+          (PentahoLocale) locale ) );
+    } catch ( IOException e ) {
+      throw new RuntimeException( e );
+    }
   }
 
   @Override

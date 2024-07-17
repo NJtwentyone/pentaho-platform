@@ -20,6 +20,7 @@
 
 package org.pentaho.platform.repository2.unified.webservices;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ import org.pentaho.platform.api.repository2.unified.RepositoryFile;
 import org.pentaho.platform.api.repository2.unified.RepositoryFileAce;
 import org.pentaho.platform.api.repository2.unified.RepositoryFileTree;
 import org.pentaho.platform.api.repository2.unified.RepositoryRequest;
+import org.pentaho.platform.api.repository2.unified.UnifiedRepositoryException;
 import org.pentaho.platform.api.repository2.unified.VersionSummary;
 import org.pentaho.platform.api.repository2.unified.data.node.NodeRepositoryFileData;
 import org.pentaho.platform.api.repository2.unified.webservices.RepositoryFileAclDto;
@@ -153,7 +155,8 @@ public class DefaultUnifiedRepositoryWebService implements IUnifiedRepositoryWeb
   }
 
   @Override
-  public RepositoryFileDto getFile( String path, boolean loadLocaleMaps, PentahoLocale locale ) {
+  public RepositoryFileDto getFile( String path, boolean loadLocaleMaps, PentahoLocale locale ) throws
+    IOException {
     RepositoryFile file = this.repo.getFile( path, loadLocaleMaps, locale );
     return file != null ? this.repositoryFileAdapter.marshal( file ) : null;
   }

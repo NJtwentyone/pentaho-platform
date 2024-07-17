@@ -20,10 +20,12 @@
 
 package org.pentaho.platform.repository2.unified.webservices;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
 import org.pentaho.platform.api.repository2.unified.RepositoryRequest;
+import org.pentaho.platform.api.repository2.unified.UnifiedRepositoryException;
 import org.pentaho.platform.api.repository2.unified.webservices.NodeRepositoryFileDataDto;
 import org.pentaho.platform.api.repository2.unified.webservices.RepositoryFileAclDto;
 import org.pentaho.platform.api.repository2.unified.webservices.RepositoryFileDto;
@@ -46,7 +48,8 @@ import org.pentaho.platform.repository2.locale.PentahoLocale;
  */
 public interface IUnifiedRepositoryWebService {
 
-  RepositoryFileDto getFile( final String path, final boolean loadLocaleMaps, final PentahoLocale locale );
+  RepositoryFileDto getFile( final String path, final boolean loadLocaleMaps, final PentahoLocale locale ) throws UnifiedRepositoryException,
+    IOException;
 
   RepositoryFileDto getFileById( final String fileId, final boolean loadLocaleMaps, final PentahoLocale locale );
 

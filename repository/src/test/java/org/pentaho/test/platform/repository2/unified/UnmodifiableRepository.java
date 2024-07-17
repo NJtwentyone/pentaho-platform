@@ -20,6 +20,7 @@
 
 package org.pentaho.test.platform.repository2.unified;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.List;
@@ -166,7 +167,7 @@ public class UnmodifiableRepository implements IUnifiedRepository {
   }
 
   @Override
-  public RepositoryFile getFile( String path, boolean loadLocaleMaps, IPentahoLocale locale ) {
+  public RepositoryFile getFile( String path, boolean loadLocaleMaps, IPentahoLocale locale ) throws IOException {
     return this.repository.getFile( path, loadLocaleMaps, locale );
   }
 

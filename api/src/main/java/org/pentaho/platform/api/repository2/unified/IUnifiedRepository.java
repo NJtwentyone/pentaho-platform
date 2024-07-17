@@ -20,6 +20,7 @@
 
 package org.pentaho.platform.api.repository2.unified;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.List;
@@ -159,7 +160,8 @@ public interface IUnifiedRepository {
    * 
    * @return {@link RepositoryFile}
    */
-  RepositoryFile getFile( final String path, final boolean loadLocaleMaps, final IPentahoLocale locale );
+  RepositoryFile getFile( final String path, final boolean loadLocaleMaps, final IPentahoLocale locale ) throws
+    IOException;
 
   /**
    * Retrieves a file at its given version by its id
