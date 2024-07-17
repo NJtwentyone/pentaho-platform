@@ -274,7 +274,11 @@ public class UnifiedRepositoryToWebServiceAdapter implements IUnifiedRepository 
   @Override
   public RepositoryFile getFile( String path ) {
     // path = path.replaceAll( ";", "/" ); //Why is it here?
-    return repositoryFileAdapter.unmarshal( repoWebService.getFile( path, false, null ) );
+    try {
+      return repositoryFileAdapter.unmarshal( repoWebService.getFile( path, false, null ) );
+    } catch ( Throwable e ) { // java.lang.IllegalAccessError is thrown
+      throw e;
+    }
   }
 
   @Override
