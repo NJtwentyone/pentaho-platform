@@ -20,13 +20,17 @@
 
 package org.pentaho.platform.api.repository2.unified;
 
+import javax.xml.ws.WebFault;
+
 /**
  * An exception that can be thrown from {@code IUnifiedRepository} implementations.
  * 
  * @author mlowery
  */
+@WebFault( name = "UnifiedRepositoryException", targetNamespace = "http://www.pentaho.org/ws/1.0" )
 public class UnifiedRepositoryException extends RuntimeException {
 
+  // TODO not sure if wsdl will register runtimeException, but have to declare variable name 'faultInfo'
   private static final long serialVersionUID = -3180298582920444104L;
 
   public UnifiedRepositoryException() {

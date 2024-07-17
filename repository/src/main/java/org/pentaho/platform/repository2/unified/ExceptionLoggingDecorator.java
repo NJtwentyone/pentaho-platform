@@ -20,6 +20,7 @@
 
 package org.pentaho.platform.repository2.unified;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -335,10 +336,17 @@ public class ExceptionLoggingDecorator implements IUnifiedRepository {
   }
 
   @Override
-  public RepositoryFile getFile( final String path, final boolean loadLocaleMaps, final IPentahoLocale locale ) {
-    return callLogThrow( new Callable<RepositoryFile>() {
+  public RepositoryFile getFile( final String path, final boolean loadLocaleMaps, final IPentahoLocale locale ) throws
+    IOException {
+    return callLogThrowIOException( new Callable<RepositoryFile>() {
       public RepositoryFile call() throws Exception {
-        return delegatee.getFile( path, loadLocaleMaps, locale );
+        try {
+          return delegatee.getFile( path, loadLocaleMaps, locale );
+        } catch ( RuntimeException rte ) {
+          // POC, I don't know how to map make runtime Exceptions show up in http://localhost:8080/pentaho/webservices/unifiedRepository?wsdl, only checked exceptions
+          // chose IOException out of convenience, should evaluate other exceptions mainly new or existing Pentaho exceptions
+          throw new IOException( "re-throwing run times!!!!", rte );
+        }
       }
     }, Messages.getInstance().getString( "ExceptionLoggingDecorator.getFile", path ) ); //$NON-NLS-1$
   }
@@ -518,6 +526,10 @@ public class ExceptionLoggingDecorator implements IUnifiedRepository {
     return callLogThrow( callable, message, null );
   }
 
+  private <T> T callLogThrowIOException( final Callable<T> callable, final String message ) throws IOException { // POC functions allowing to throw a checked exception
+    return callLogThrowIOException( callable, message, null );
+  }
+
   /**
    * Calls the Callable and returns the value it returns. If an exception occurs, it is logged and a new
    * non-chained exception is thrown.
@@ -570,6 +582,49 @@ public class ExceptionLoggingDecorator implements IUnifiedRepository {
 
     }
   }
+
+
+  private <T> T callLogThrowIOException( final Callable<T> callable, final String message, Constructor<UnifiedRepositoryException> exceptionConstructor ) throws IOException {  // POC functions allowing to throw a checked exception
+    try {
+      return callable.call();
+    } catch ( IOException ioe ) {
+      throw ioe;
+    } catch ( Exception e ) {
+      // generate reference #
+      String refNum = UUID.randomUUID().toString();
+      if ( logger.isDebugEnabled() ) {
+        logger.debug( Messages.getInstance().getString( "ExceptionLoggingDecorator.referenceNumber", refNum ), e ); //$NON-NLS-1$
+      }
+
+      // list all exceptions in stack
+      @SuppressWarnings( "unchecked" )
+      List<Throwable> throwablesInStack = ExceptionUtils.getThrowableList( e );
+      // reverse them so most specific exception (root cause) comes first
+      Collections.reverse( throwablesInStack );
+
+      for ( Throwable t : throwablesInStack ) {
+        String className = t.getClass().getName();
+        if ( exceptionConverterMap.containsKey( className ) ) {
+          throw exceptionConverterMap.get( className ).convertException( (Exception) t, message, refNum );
+        }
+
+      }
+
+      if ( exceptionConstructor != null ) {
+        try {
+          throw exceptionConstructor.newInstance( message, e );
+        } catch ( InstantiationException | IllegalAccessException | InvocationTargetException e1 ) {
+          logger.error( e1 );
+        }
+      }
+
+      // no converter; throw general exception
+      throw new UnifiedRepositoryException( Messages.getInstance().getString(
+        "ExceptionLoggingDecorator.generalException", message, refNum ), e ); //$NON-NLS-1$
+
+    }
+  }
+
 
   public List<RepositoryFile> getReferrers( final Serializable fileId ) {
     return callLogThrow( new Callable<List<RepositoryFile>>() {
